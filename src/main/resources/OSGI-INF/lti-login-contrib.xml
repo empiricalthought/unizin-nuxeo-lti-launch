@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<component name="org.unizin.cmp.login.lti.auth">
+
+  <require>org.nuxeo.ecm.platform.usermanager.UserManagerImpl</require>
+  <require>org.nuxeo.ecm.platform.ui.web.auth.WebEngineConfig</require>
+
+  <!-- Specific Auth Chain -->
+
+  <!--<extension
+          target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+          point="specificChains">
+    <specificAuthenticationChain name="LTI_AUTH">
+      <urlPatterns>
+        <url>(.*)/something.*</url>
+      </urlPatterns>
+
+      <replacementChain>
+        <plugin>LTI_AUTH</plugin>
+      </replacementChain>
+    </specificAuthenticationChain>
+  </extension>-->
+
+  <!-- Auth Chain Example -->
+
+  <!--<extension
+          target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+          point="chain">
+    <authenticationChain>
+      <plugins>
+        <plugin>BASIC_AUTH</plugin>
+        <plugin>ANONYMOUS_AUTH</plugin>
+        <plugin>FORM_AUTH</plugin>
+        <plugin>LTI_AUTH</plugin>
+      </plugins>
+    </authenticationChain>
+  </extension>-->
+
+  <!-- User Mapping -->
+
+  <extension target="org.nuxeo.usermapper.service.UserMapperComponent"
+             point="mapper">
+
+    <documentation>
+      Contribute the default usermapper for LTI.
+    </documentation>
+
+    <mapper name="LTI" class="org.unizin.cmp.login.LtiUserMapper">
+    </mapper>
+
+  </extension>
+
+  <extension
+          target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
+          point="authenticators">
+    <authenticationPlugin
+            name="LTI_AUTH"
+            enabled="true"
+            class="org.unizin.cmp.login.LtiAuthenticator">
+      <loginModulePlugin>Trusting_LM</loginModulePlugin>
+      <!-- <loginModulePlugin>LtiLoginPlugin</loginModulePlugin> -->
+    </authenticationPlugin>
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.login.LoginPluginRegistry"
+             point="plugin">
+    <LoginPlugin name="LtiLoginPlugin"
+                 class="org.unizin.cmp.login.LtiLoginPlugin">
+      <enabled>true</enabled>
+    </LoginPlugin>
+  </extension>
+
+</component>
