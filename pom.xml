@@ -1,82 +1,41 @@
-<?xml version="1.0"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <!--<parent>-->
-  <!--<groupId>org.unizin.cmp</groupId>-->
-  <!--<artifactId>unizin-parent</artifactId>-->
-  <!--<version>1.0.17-SNAPSHOT</version>-->
-  <!--</parent>-->
+
+  <parent>
+    <groupId>org.nuxeo.ecm.distribution</groupId>
+    <artifactId>nuxeo-distribution</artifactId>
+    <version>7.10</version>
+  </parent>
+
   <artifactId>unizin-login-lti</artifactId>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <groupId>org.unizin.cmp</groupId>
   <version>1.0.17-SNAPSHOT</version>
   <name>Unizin login lti</name>
-  <description>Nuxeo extension to get or create Nuxeo users based on valid LTI
-    launch parameters
-  </description>
+  <description>Nuxeo extension to get or create Nuxeo users based on valid LTI launch parameters</description>
+  <packaging>pom</packaging>
 
-  <dependencies>
-
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-web-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-usermanager-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-oauth</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-usermapper</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.nuxeo.ecm.webengine</groupId>
-      <artifactId>nuxeo-webengine-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-    </dependency>
-
-  </dependencies>
-
+  <modules>
+    <module>unizin-login-lti-addon</module>
+    <module>unizin-login-lti-mp</module>
+  </modules>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.nuxeo.ecm.distribution</groupId>
-        <artifactId>nuxeo-distribution</artifactId>
-        <scope>import</scope>
-        <type>pom</type>
-        <version>7.10</version>
+        <groupId>org.unizin.cmp</groupId>
+        <artifactId>unizin-login-lti-addon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.unizin.cmp</groupId>
+        <artifactId>unizin-login-lti-mp</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
-
-  <repositories>
+ <repositories>
     <repository>
       <id>public</id>
       <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
@@ -113,4 +72,5 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+
 </project>
