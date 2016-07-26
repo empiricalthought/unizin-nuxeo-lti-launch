@@ -6,4 +6,5 @@ Bundle-Version: 1.0.0
 Bundle-Name: unizin-login-lti
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.unizin.cmp.unizin-login-lti;singleton=true
-Nuxeo-Component: OSGI-INF/lti-login-contrib.xml
+Nuxeo-Component: OSGI-INF/lti-login-contrib.xml,
+  OSGI-INF/authentication-contrib.xml
