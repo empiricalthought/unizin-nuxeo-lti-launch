@@ -7,7 +7,6 @@
   </parent>
 
   <artifactId>unizin-login-lti-addon</artifactId>
-  <groupId>org.unizin.cmp</groupId>
   <name>Unizin login LTI Addon</name>
   <description>Nuxeo extension to get or create Nuxeo users based on valid LTI launch parameters</description>
 
