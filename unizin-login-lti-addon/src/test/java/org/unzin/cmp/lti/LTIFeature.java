@@ -9,12 +9,12 @@ import org.nuxeo.runtime.test.runner.SimpleFeature;
 
 @Features(PlatformFeature.class)
 @Deploy({
-	"org.nuxeo.ecm.platform.oauth",
-	"org.nuxeo.usermapper",
-	"org.unizin.cmp.unizin-login-lti",
-	})
+    "org.nuxeo.ecm.platform.oauth",
+    "org.nuxeo.usermapper",
+    })
 @LocalDeploy({
-	"org.unizin.cmp.unizin-login-lti.test:OSGI-INF/mock-usermapper.xml",
+    "org.unizin.cmp.unizin-login-lti",
+    "org.unizin.cmp.unizin-login-lti.test:OSGI-INF/mock-usermapper.xml",
 })
 public class LTIFeature extends SimpleFeature {
 }

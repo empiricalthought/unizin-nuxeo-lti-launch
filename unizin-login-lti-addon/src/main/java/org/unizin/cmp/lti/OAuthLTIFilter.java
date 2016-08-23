@@ -16,7 +16,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.elasticsearch.common.collect.Maps;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
 import org.nuxeo.ecm.platform.ui.web.auth.interfaces.NuxeoAuthPreFilter;
@@ -25,6 +24,8 @@ import org.nuxeo.runtime.transaction.TransactionHelper;
 import org.nuxeo.usermapper.service.UserMapperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
 
 import net.oauth.OAuth.Problems;
 import net.oauth.OAuthConsumer;
