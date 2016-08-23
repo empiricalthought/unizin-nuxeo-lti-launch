@@ -2,7 +2,6 @@
 <component name="org.unizin.cmp.login.lti.auth">
 
   <require>org.nuxeo.ecm.platform.usermanager.UserManagerImpl</require>
-<!--   <require>org.nuxeo.ecm.platform.ui.web.auth.WebEngineConfig</require> -->
 
   <extension target="org.nuxeo.usermapper.service.UserMapperComponent"
              point="mapper">
