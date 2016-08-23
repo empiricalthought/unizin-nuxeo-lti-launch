@@ -27,7 +27,12 @@
     <priority value="TRACE"/>
     <appender-ref ref="FILE"/>
   </category>
-  
+
+  <category name="org.unizin">
+    <priority value="DEBUG"/>
+    <appender-ref ref="CONSOLE"/>
+  </category>
+
   <root>
     <priority value="INFO" />
     <appender-ref ref="CONSOLE" />

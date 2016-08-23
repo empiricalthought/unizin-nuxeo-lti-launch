@@ -8,7 +8,7 @@
     <documentation>
       Contribute the default usermapper for LTI.
     </documentation>
-    <mapper name="LTI" class="org.unizin.cmp.auth.LtiUserMapper">
+    <mapper name="LTI" class="org.unizin.cmp.lti.LtiUserMapper">
     </mapper>
   </extension>
 

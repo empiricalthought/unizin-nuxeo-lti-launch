@@ -1,4 +1,4 @@
-package org.unzin.cmp.auth;
+package org.unzin.cmp.lti;
 
 import org.nuxeo.ecm.platform.test.PlatformFeature;
 import org.nuxeo.runtime.test.runner.Deploy;

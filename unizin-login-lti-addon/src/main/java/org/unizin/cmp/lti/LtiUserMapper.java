@@ -1,4 +1,4 @@
-package org.unizin.cmp.auth;
+package org.unizin.cmp.lti;
 
 import java.io.Serializable;
 import java.util.Map;

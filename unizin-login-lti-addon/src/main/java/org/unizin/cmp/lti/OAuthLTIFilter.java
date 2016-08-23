@@ -1,7 +1,7 @@
-package org.unizin.cmp.auth;
+package org.unizin.cmp.lti;
 
-import static org.unizin.cmp.auth.LTIRequests.isLTILaunch;
-import static org.unizin.cmp.auth.LTIRequests.validate;
+import static org.unizin.cmp.lti.LTIRequests.isLTILaunch;
+import static org.unizin.cmp.lti.LTIRequests.validate;
 
 import java.io.IOException;
 import java.security.Principal;

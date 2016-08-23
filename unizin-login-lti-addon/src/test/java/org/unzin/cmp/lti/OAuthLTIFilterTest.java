@@ -1,4 +1,4 @@
-package org.unzin.cmp.auth;
+package org.unzin.cmp.lti;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,8 +21,8 @@ import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-import org.unizin.cmp.auth.LTIConsumerRegistry;
-import org.unizin.cmp.auth.OAuthLTIFilter;
+import org.unizin.cmp.lti.LTIConsumerRegistry;
+import org.unizin.cmp.lti.OAuthLTIFilter;
 
 import com.google.common.net.MediaType;
 

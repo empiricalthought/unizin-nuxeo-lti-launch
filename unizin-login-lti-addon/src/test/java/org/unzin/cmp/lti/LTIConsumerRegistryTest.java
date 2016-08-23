@@ -1,4 +1,4 @@
-package org.unzin.cmp.auth;
+package org.unzin.cmp.lti;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -16,7 +16,7 @@ import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-import org.unizin.cmp.auth.LTIConsumerRegistry;
+import org.unizin.cmp.lti.LTIConsumerRegistry;
 
 import net.oauth.OAuthConsumer;
 import net.oauth.signature.RSA_SHA1;
