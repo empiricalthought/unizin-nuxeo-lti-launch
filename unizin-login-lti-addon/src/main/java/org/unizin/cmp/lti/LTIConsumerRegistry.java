@@ -38,11 +38,13 @@ public interface LTIConsumerRegistry {
 
         private DirectoryService directoryService;
 
+
         @Override
-        public void activate(ComponentContext context) {
+        public void activate(final ComponentContext context) {
             super.activate(context);
             directoryService = Framework.getService(DirectoryService.class);
         }
+
 
         @Override
         public OAuthConsumer get(final String consumerKey) {
@@ -69,7 +71,9 @@ public interface LTIConsumerRegistry {
             }
         }
 
-        private static DocumentModel getOrCreate(final Session session, final String consumerKey) {
+
+        private static DocumentModel getOrCreate(final Session session,
+                final String consumerKey) {
             DocumentModel doc = session.getEntry(consumerKey);
             if (doc == null) {
                 final Map<String, Object> map = Maps.newHashMap();

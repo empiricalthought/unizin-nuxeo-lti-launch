@@ -2,6 +2,7 @@
 <component name="org.unizin.cmp.lti.userMapping">
 
   <require>org.nuxeo.ecm.platform.usermanager.UserManagerImpl</require>
+  <require>org.nuxeo.ecm.directory.api</require>
 
   <extension target="org.nuxeo.usermapper.service.UserMapperComponent"
              point="mapper">
