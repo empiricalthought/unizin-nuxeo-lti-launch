@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<component name="org.unizin.cmp.login.lti.auth">
+
+  <require>org.nuxeo.ecm.platform.usermanager.UserManagerImpl</require>
+<!--   <require>org.nuxeo.ecm.platform.ui.web.auth.WebEngineConfig</require> -->
+
+  <extension target="org.nuxeo.usermapper.service.UserMapperComponent"
+             point="mapper">
+    <documentation>
+      Contribute the default usermapper for LTI.
+    </documentation>
+    <mapper name="LTI" class="org.unzin.cmp.auth.MockUserMapper">
+    </mapper>>
+  </extension>
+
+</component>

@@ -1,13 +1,38 @@
 package org.unizin.cmp.auth;
 
-import java.io.IOException;
+import static org.unizin.cmp.auth.LTIRequests.isLTILaunch;
+import static org.unizin.cmp.auth.LTIRequests.validate;
 
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.elasticsearch.common.collect.Maps;
+import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
+import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
 import org.nuxeo.ecm.platform.ui.web.auth.interfaces.NuxeoAuthPreFilter;
+import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.transaction.TransactionHelper;
+import org.nuxeo.usermapper.service.UserMapperService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.oauth.OAuth.Problems;
+import net.oauth.OAuthConsumer;
+import net.oauth.OAuthMessage;
+import net.oauth.OAuthProblemException;
+import net.oauth.OAuthValidator;
+import net.oauth.SimpleOAuthValidator;
+import net.oauth.server.OAuthServlet;
 
 /**
  * Authentication pre-filter used to replace the one defined by the OAuth addon.
@@ -16,12 +41,99 @@ import org.nuxeo.ecm.platform.ui.web.auth.interfaces.NuxeoAuthPreFilter;
  */
 public class OAuthLTIFilter implements NuxeoAuthPreFilter {
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
-        // TODO Auto-generated method stub
-        //
-        throw new UnsupportedOperationException();
-    }
+	private static final Logger LOGGER = LoggerFactory.getLogger(OAuthLTIFilter.class);
+	private static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
 
+
+	@Override
+	public void doFilter(final ServletRequest req,
+			final ServletResponse resp,
+			final FilterChain chain)
+					throws IOException, ServletException {
+		boolean lti = false;
+		if (req instanceof HttpServletRequest &&
+				resp instanceof HttpServletResponse) {
+			final HttpServletRequest request = (HttpServletRequest)req;
+			final HttpServletResponse response = (HttpServletResponse)resp;
+			if (isLTILaunch(request)) {
+				lti = true;
+				try {
+					final Principal principal = doFilter(request, response);
+					chain.doFilter(new NuxeoSecuredRequestWrapper(request, principal), resp);
+				} catch (final OAuthProblemException e) {
+					response.sendError(Problems.TO_HTTP_CODE.get(e.getProblem()), e.getMessage());
+				}
+			}
+		}
+		// Not an LTI launch request. Let something else try to handle it.
+		if (! lti) {
+			chain.doFilter(req, resp);
+		}
+	}
+
+
+	private Principal doFilter(final HttpServletRequest request,
+			final HttpServletResponse response)
+					throws IOException, OAuthProblemException {
+		final String url = LTIRequests.requestURL(request);
+		final OAuthMessage message = OAuthServlet.getMessage(request, url);
+		LOGGER.debug("OAuth message received: {}", message);
+
+		// Accesses database to look up OAuth secrets and keys, and possibly to
+		// find or create users, so needs a transaction.
+		boolean startedTx = false;
+		if (!TransactionHelper.isTransactionActive()) {
+			startedTx = TransactionHelper.startTransaction();
+		}
+		boolean done = false;
+		done = true;
+		try {
+			return doFilter(message, request, response);
+		} finally {
+			if (startedTx) {
+				if (done == false) {
+					TransactionHelper.setTransactionRollbackOnly();
+				}
+				TransactionHelper.commitOrRollbackTransaction();
+			}
+		}
+	}
+
+
+	private static Principal principal(final HttpServletRequest request) {
+		final Map<String, Object> userObject = Maps.newHashMap();
+		for (final String param : Collections.list(request.getParameterNames())) {
+			userObject.put(param, request.getParameter(param));
+		}
+		final UserMapperService ums = Framework.getService(UserMapperService.class);
+		System.out.println(ums.getAvailableMappings());
+		return ums.getOrCreateAndUpdateNuxeoPrincipal("LTI", userObject);
+	}
+
+
+	private Principal doFilter(final OAuthMessage message,
+			final HttpServletRequest request,
+			final HttpServletResponse response)
+					throws IOException, OAuthProblemException {
+		// message methods are documented to throw IOException but never will.
+		final String consumerKey = message.getConsumerKey();
+		final OAuthConsumer consumer = Framework.getService(
+				LTIConsumerRegistry.class).get(consumerKey);
+		if (consumer == null) {
+			LOGGER.debug("Consumer key {} unknown.", consumerKey);
+			throw new OAuthProblemException(Problems.CONSUMER_KEY_UNKNOWN);
+		}
+		validate(VALIDATOR, message, consumer, LOGGER);
+		final Principal principal = principal(request);
+		if (principal == null) {
+			throw new OAuthProblemException(Problems.USER_REFUSED);
+		}
+		try {
+			NuxeoAuthenticationFilter.loginAs(principal.getName());
+			return principal;
+		} catch (final LoginException e) {
+			// Login failed. Follow NuxeoOAuthFilter's lead and send this back.
+			throw new OAuthProblemException(Problems.SIGNATURE_INVALID);
+		}
+	}
 }

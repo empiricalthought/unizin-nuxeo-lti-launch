@@ -1,10 +1,14 @@
-Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
 Manifest-Version: 1.0
-Bundle-Vendor: org.unizin.cmp
+Bundle-SymbolicName: org.unizin.cmp.unizin-login-lti;singleton=true
 Bundle-Version: 1.0.0
 Bundle-Name: unizin-login-lti
+Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.unizin.cmp.unizin-login-lti;singleton=true
+Bundle-Vendor: org.unizin.cmp
 Nuxeo-Component: OSGI-INF/lti-login-contrib.xml,
-  OSGI-INF/authentication-contrib.xml
+ OSGI-INF/authentication-contrib.xml,
+ OSGI-INF/lticonsumer-framework.xml,
+ OSGI-INF/schema-contrib.xml,
+ OSGI-INF/directory-contrib.xml
+

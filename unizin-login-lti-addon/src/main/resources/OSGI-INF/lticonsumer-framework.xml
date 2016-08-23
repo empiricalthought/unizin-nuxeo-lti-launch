@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="org.unizin.cmp.lti.consumerRegistry">
+  <implementation
+          class="org.unizin.cmp.auth.LTIConsumerRegistry$Implementation" />
+  <documentation>
+    Component and Service to manage LTI OAuth consumers.
+  </documentation>
+  <service>
+  	<provide interface="org.unizin.cmp.auth.LTIConsumerRegistry" />
+  </service>
+</component>
