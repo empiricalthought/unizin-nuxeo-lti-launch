@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<component name="org.unizin.cmp.lti.directoryUIContrib">
+
+  <require>org.nuxeo.ecm.directory.ui.DirectoryUIManager</require>
+  <require>org.nuxeo.ecm.platform.forms.layout.WebLayoutManager</require>
+
+  <extension point="directories"
+    target="org.nuxeo.ecm.directory.ui.DirectoryUIManager">
+    <directory layout="ltiConsumerLayout" name="ltiConsumers"
+      sortField="consumerKey" />
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+    point="layouts">
+
+    <layout name="ltiConsumerLayout">
+      <templates>
+        <template mode="any">
+          /directory/directory_layout_template.xhtml
+        </template>
+      </templates>
+      <rows>
+        <row>
+          <widget>consumerKey</widget>
+        </row>
+        <row>
+          <widget>consumerSecret</widget>
+        </row>
+        <row>
+          <widget>RSAPublicKey</widget>
+        </row>
+        <row>
+          <widget>X509Certificate</widget>
+        </row>
+      </rows>
+
+      <widget name="consumerKey" type="text">
+        <labels>
+          <label mode="any">Consumer Key</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>ltiConsumer.consumerKey</field>
+        </fields>
+      </widget>
+      <widget name="consumerSecret" type="text">
+        <labels>
+          <label mode="any">Consumer Secret</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>ltiConsumer.consumerSecret</field>
+        </fields>
+      </widget>
+      <widget name="RSAPublicKey" type="text">
+        <labels>
+          <label mode="any">RSA Public Key</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>ltiConsumer.RSAPublicKey</field>
+        </fields>
+      </widget>
+      <widget name="X509Certificate" type="text">
+        <labels>
+          <label mode="any">X509 Certificate</label>
+        </labels>
+        <translated>true</translated>
+        <fields>
+          <field>ltiConsumer.X509Certificate</field>
+        </fields>
+      </widget>
+    </layout>
+  </extension>
+</component>
