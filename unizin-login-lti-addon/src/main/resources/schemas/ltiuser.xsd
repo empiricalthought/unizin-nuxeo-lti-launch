@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:nxs="http://www.unizin.org/schemas/ltiuser"
+           targetNamespace="http://www.unizin.org/schemas/ltiuser">
+
+  <xs:include schemaLocation="base.xsd" />
+
+  <xs:element name="username" type="xs:string" />
+  <xs:element name="password" type="xs:string" />
+  <xs:element name="email" type="xs:string" />
+  <xs:element name="firstName" type="xs:string" />
+  <xs:element name="lastName" type="xs:string" />
+  <xs:element name="company" type="xs:string" />
+
+  <!-- LTI elements -->
+  <xs:element name="toolConsumerInstanceGuid" type="xs:string"/>
+  <xs:element name="ltiUserId" type="xs:string"/>
+
+  <xs:element name="groups" type="nxs:stringList" />
+
+</xs:schema>

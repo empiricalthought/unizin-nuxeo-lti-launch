@@ -1,45 +1,44 @@
 package org.unizin.cmp.lti;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.IOException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.Principal;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-
-import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
-import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
-import org.jboss.seam.mock.MockHttpSession;
-import org.jboss.seam.mock.MockServletContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
-import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.test.runner.Features;
-import org.nuxeo.runtime.test.runner.FeaturesRunner;
-import org.unizin.cmp.lti.LTIConsumerRegistry;
-import org.unizin.cmp.lti.OAuthLTIFilter;
-
 import com.google.common.net.MediaType;
-
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthMessage;
 import net.oauth.server.OAuthServlet;
 import net.oauth.signature.RSA_SHA1;
+import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
+import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
+import org.jboss.seam.mock.MockHttpSession;
+import org.jboss.seam.mock.MockServletContext;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
+import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
+import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.test.runner.Features;
+import org.nuxeo.runtime.test.runner.FeaturesRunner;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Principal;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(FeaturesRunner.class)
 @Features(LTIFeature.class)
 public final class OAuthLTIFilterTest {
+
+    public static final String EXPECTED_USERNAME = "wharblegarbleg12345";
     private static final class MockFilterChain implements FilterChain {
         int numCalls = 0;
         int authCalls = 0;
@@ -76,6 +75,11 @@ public final class OAuthLTIFilterTest {
         resp = new EnhancedMockHttpServletResponse();
     }
 
+    @After
+    public void tearDown() throws Exception {
+        NuxeoAuthenticationFilter.loginAs("Administrator");
+    }
+
     @Test
     public void testUnauth() throws IOException, ServletException {
         filter.doFilter(req, resp, chain);
@@ -103,6 +107,11 @@ public final class OAuthLTIFilterTest {
         req.addParameter("oauth_signature_method", signatureMethod);
         req.addParameter("oauth_timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         req.addParameter("lti_message_type", "basic-lti-launch-request");
+        req.addParameter("tool_consumer_instance_guid", "wharblegarbleguid");
+        req.addParameter("user_id", "12345");
+        req.addParameter("lis_person_name_given", "Ani");
+        req.addParameter("lis_person_name_family", "DiFranco");
+        req.addParameter("lis_person_contact_email_primary", "info@righteousbabe.com");
         req.setRequestURI(requestURI);
         final OAuthMessage message = OAuthServlet.getMessage(req, requestURI.replaceFirst("http:", "https:"));
         message.sign(new OAuthAccessor(consumer));
@@ -111,7 +120,7 @@ public final class OAuthLTIFilterTest {
         assertEquals(resp.getStatusMessage(), HttpServletResponse.SC_OK, resp.getStatus());
         assertEquals("Expected one call to filter chain.", 1, chain.numCalls);
         assertEquals("Expected one authorized call to filter chain.", 1, chain.authCalls);
-        assertEquals(MockUserMapper.USERNAME, chain.principal.getName());
+        assertEquals(EXPECTED_USERNAME, chain.principal.getName());
     }
 
     @Test
