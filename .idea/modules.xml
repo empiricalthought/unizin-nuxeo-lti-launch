@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/unizin-login-lti.iml" filepath="$PROJECT_DIR$/unizin-login-lti.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unizin-login-lti-addon/unizin-login-lti-addon.iml" filepath="$PROJECT_DIR$/unizin-login-lti-addon/unizin-login-lti-addon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unizin-login-lti-mp/unizin-login-lti-mp.iml" filepath="$PROJECT_DIR$/unizin-login-lti-mp/unizin-login-lti-mp.iml" />
+    </modules>
+  </component>
+</project>
