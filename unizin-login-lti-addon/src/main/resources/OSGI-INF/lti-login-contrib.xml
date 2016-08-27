@@ -1,15 +1,28 @@
 <?xml version="1.0"?>
 <component name="org.unizin.cmp.lti.userMapping">
 
-  <require>org.nuxeo.ecm.platform.usermanager.UserManagerImpl</require>
-  <require>org.nuxeo.ecm.directory.api</require>
+  <require>org.nuxeo.usermapper.service.UserMapperComponent</require>
 
   <extension target="org.nuxeo.usermapper.service.UserMapperComponent"
              point="mapper">
     <documentation>
       Contribute the default usermapper for LTI.
     </documentation>
-    <mapper name="LTI" class="org.unizin.cmp.lti.LtiUserMapper">
+    <mapper name="LTI" type="js">
+      <mapperScript>
+
+        var toolGuid = userObject["tool_consumer_instance_guid"];
+        var ltiUserId = userObject["user_id"];
+
+        searchAttributes.put("toolConsumerInstanceGuid", toolGuid);
+        searchAttributes.put("ltiUserId", ltiUserId);
+
+        userAttributes.put("username", toolGuid.substr(0, 14) + ltiUserId.substr(0, 14));
+        userAttributes.put("firstName", userObject["lis_person_name_given"]);
+        userAttributes.put("lastName", userObject["lis_person_name_family"]);
+        userAttributes.put("email", userObject["lis_person_contact_email_primary"]);
+
+      </mapperScript>
     </mapper>
   </extension>
 

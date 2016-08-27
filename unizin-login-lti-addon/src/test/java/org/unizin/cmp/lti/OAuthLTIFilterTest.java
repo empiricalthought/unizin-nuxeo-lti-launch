@@ -40,6 +40,8 @@ import net.oauth.signature.RSA_SHA1;
 @RunWith(FeaturesRunner.class)
 @Features(LTIFeature.class)
 public final class OAuthLTIFilterTest {
+
+    public static final String EXPECTED_USERNAME = "wharblegarbleg12345";
     private static final class MockFilterChain implements FilterChain {
         int numCalls = 0;
         int authCalls = 0;
@@ -103,6 +105,11 @@ public final class OAuthLTIFilterTest {
         req.addParameter("oauth_signature_method", signatureMethod);
         req.addParameter("oauth_timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         req.addParameter("lti_message_type", "basic-lti-launch-request");
+        req.addParameter("tool_consumer_instance_guid", "wharblegarbleguid");
+        req.addParameter("user_id", "12345");
+        req.addParameter("lis_person_name_given", "Ani");
+        req.addParameter("lis_person_name_family", "DiFranco");
+        req.addParameter("lis_person_contact_email_primary", "info@righteousbabe.com");
         req.setRequestURI(requestURI);
         final OAuthMessage message = OAuthServlet.getMessage(req, requestURI.replaceFirst("http:", "https:"));
         message.sign(new OAuthAccessor(consumer));
@@ -111,7 +118,7 @@ public final class OAuthLTIFilterTest {
         assertEquals(resp.getStatusMessage(), HttpServletResponse.SC_OK, resp.getStatus());
         assertEquals("Expected one call to filter chain.", 1, chain.numCalls);
         assertEquals("Expected one authorized call to filter chain.", 1, chain.authCalls);
-        assertEquals(MockUserMapper.USERNAME, chain.principal.getName());
+        assertEquals(EXPECTED_USERNAME, chain.principal.getName());
     }
 
     @Test
