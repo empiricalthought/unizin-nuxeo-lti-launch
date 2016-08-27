@@ -11,12 +11,11 @@ import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.MockHttpSession;
 import org.jboss.seam.mock.MockServletContext;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
-import org.nuxeo.ecm.core.test.annotations.Granularity;
-import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
+import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
@@ -37,7 +36,6 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(FeaturesRunner.class)
 @Features(LTIFeature.class)
-@RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
 public final class OAuthLTIFilterTest {
 
     public static final String EXPECTED_USERNAME = "wharblegarbleg12345";
@@ -75,6 +73,11 @@ public final class OAuthLTIFilterTest {
         req = new EnhancedMockHttpServletRequest(
                 session, null, null, null, "POST");
         resp = new EnhancedMockHttpServletResponse();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        NuxeoAuthenticationFilter.loginAs("Administrator");
     }
 
     @Test
