@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="org.unizin.cmp.lti.schemaContribs">
+	<extension target="org.nuxeo.ecm.core.schema.TypeService"
+		point="schema">
+		<schema name="ltiConsumer" src="schemas/lticonsumer.xsd" />
+	</extension>
+</component>

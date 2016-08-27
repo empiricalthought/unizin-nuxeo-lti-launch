@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
-<component name="org.unizin.cmp.login.lti.auth.config">
+<component name="org.unizin.cmp.lti.config">
 
   <require>org.nuxeo.ecm.platform.oauth.auth.defaultConfig</require>
 
   <extension
       target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
       point="preFilter">
-
-      <preFilter name="OAuth" enabled="false" class="org.nuxeo.ecm.platform.ui.web.auth.oauth.NuxeoOAuthFilter"/>
-      <preFilter name="OAuth2" enabled="false" class="org.nuxeo.ecm.platform.ui.web.auth.oauth2.NuxeoOAuth2Filter"/>
-      <preFilter name="OAuthLTI" class="org.unizin.cmp.auth.OAuthLTIFilter"/>
-
+      <preFilter name="OAuthLTI" class="org.unizin.cmp.lti.OAuthLTIFilter"/>
+      <preFilter name="OAuth" class="org.nuxeo.ecm.platform.ui.web.auth.oauth.NuxeoOAuthFilter"/>
+      <preFilter name="OAuth2" class="org.nuxeo.ecm.platform.ui.web.auth.oauth2.NuxeoOAuth2Filter"/>
   </extension>
 
 </component>

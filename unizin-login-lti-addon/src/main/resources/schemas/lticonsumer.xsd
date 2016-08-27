@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://unizin.org/schemas/lticonsumer"
+  xmlns:oauthconsumer="http://unizin.org/schemas/lticonsumernamespace">
+  <xs:element name="consumerKey" type="xs:string"/>
+  <xs:element name="consumerSecret" type="xs:string"/>
+  <xs:element name="RSAPublicKey" type="xs:string"/>
+  <xs:element name="X509Certificate" type="xs:string"/>
+</xs:schema>

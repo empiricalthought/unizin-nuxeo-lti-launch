@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<component name="org.unizin.cmp.lti.directoryContrib">
+  <extension target="org.nuxeo.ecm.directory.sql.SQLDirectoryFactory"
+    point="directories">
+    <directory name="ltiConsumers">
+      <schema>ltiConsumer</schema>
+      <dataSource>java:/nxsqldirectory</dataSource>
+      <cacheTimeout>3600</cacheTimeout>
+      <cacheMaxSize>1000</cacheMaxSize>
+      <table>ltiConsumers</table>
+      <idField>consumerKey</idField>
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+    </directory>
+  </extension>
+</component>

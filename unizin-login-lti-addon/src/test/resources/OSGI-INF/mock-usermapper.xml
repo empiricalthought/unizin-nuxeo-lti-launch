@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
-<component name="org.unizin.cmp.lti.userMapping">
+<!--  name must be different from actual mapping contribution -->
+<component name="org.unizin.cmp.lti.userMapping.mock">
 
   <require>org.nuxeo.ecm.platform.usermanager.UserManagerImpl</require>
-  <require>org.nuxeo.ecm.directory.api</require>
 
   <extension target="org.nuxeo.usermapper.service.UserMapperComponent"
              point="mapper">
     <documentation>
       Contribute the default usermapper for LTI.
     </documentation>
-    <mapper name="LTI" class="org.unizin.cmp.lti.LtiUserMapper">
-    </mapper>
+    <mapper name="LTI" class="org.unizin.cmp.lti.MockUserMapper">
+    </mapper>>
   </extension>
 
 </component>
