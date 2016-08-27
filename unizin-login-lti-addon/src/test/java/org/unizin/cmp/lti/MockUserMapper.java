@@ -1,4 +1,4 @@
-package org.unzin.cmp.lti;
+package org.unizin.cmp.lti;
 
 import java.io.Serializable;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package org.unzin.cmp.lti;
+package org.unizin.cmp.lti;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

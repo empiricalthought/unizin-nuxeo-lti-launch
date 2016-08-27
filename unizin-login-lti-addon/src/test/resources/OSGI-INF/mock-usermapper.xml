@@ -9,7 +9,7 @@
     <documentation>
       Contribute the default usermapper for LTI.
     </documentation>
-    <mapper name="LTI" class="org.unzin.cmp.lti.MockUserMapper">
+    <mapper name="LTI" class="org.unizin.cmp.lti.MockUserMapper">
     </mapper>>
   </extension>
 
