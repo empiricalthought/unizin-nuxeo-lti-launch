@@ -15,8 +15,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -31,7 +33,10 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Principal;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(FeaturesRunner.class)
@@ -112,6 +117,7 @@ public final class OAuthLTIFilterTest {
         req.addParameter("lis_person_name_given", "Ani");
         req.addParameter("lis_person_name_family", "DiFranco");
         req.addParameter("lis_person_contact_email_primary", "info@righteousbabe.com");
+        req.addParameter("roles", "Instructor,Learner");
         req.setRequestURI(requestURI);
         final OAuthMessage message = OAuthServlet.getMessage(req, requestURI.replaceFirst("http:", "https:"));
         message.sign(new OAuthAccessor(consumer));
@@ -121,6 +127,12 @@ public final class OAuthLTIFilterTest {
         assertEquals("Expected one call to filter chain.", 1, chain.numCalls);
         assertEquals("Expected one authorized call to filter chain.", 1, chain.authCalls);
         assertEquals(EXPECTED_USERNAME, chain.principal.getName());
+        UserManager um = Framework.getService(UserManager.class);
+        DocumentModel userDoc = um.getUserModel(EXPECTED_USERNAME);
+        assertNotNull(userDoc);
+        String ltiRoles = (String) userDoc.getPropertyValue("user:ltiRoles");
+        assertNotNull(ltiRoles);
+        assertThat(ltiRoles.split(","), hasItemInArray("Instructor"));
     }
 
     @Test
