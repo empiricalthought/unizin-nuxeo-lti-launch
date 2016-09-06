@@ -4,7 +4,9 @@
            targetNamespace="http://www.unizin.org/schemas/ltiuser">
 
   <xs:include schemaLocation="base.xsd" />
-
+  <xs:simpleType name="roleList">
+    <xs:list itemType="xs:string"/>
+  </xs:simpleType>
   <xs:element name="username" type="xs:string" />
   <xs:element name="password" type="xs:string" />
   <xs:element name="email" type="xs:string" />
@@ -15,6 +17,10 @@
   <!-- LTI elements -->
   <xs:element name="toolConsumerInstanceGuid" type="xs:string"/>
   <xs:element name="ltiUserId" type="xs:string"/>
+
+  <!-- commented-out section below fails to create DB tables -->
+  <!-- <xs:element name="ltiRoles" type="nxs:stringList"/> -->
+  <xs:element name="ltiRoles" type="xs:string"/>
 
   <xs:element name="groups" type="nxs:stringList" />
 

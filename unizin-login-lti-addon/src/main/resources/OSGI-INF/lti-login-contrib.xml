@@ -21,6 +21,7 @@
         userAttributes.put("firstName", userObject["lis_person_name_given"]);
         userAttributes.put("lastName", userObject["lis_person_name_family"]);
         userAttributes.put("email", userObject["lis_person_contact_email_primary"]);
+        userAttributes.put("ltiRoles", userObject["roles"]);
 
       </mapperScript>
     </mapper>
