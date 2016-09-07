@@ -16,6 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.directory.Session;
+import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
@@ -23,6 +26,8 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
+import javax.inject.Inject;
+import javax.security.auth.login.LoginContext;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -32,6 +37,7 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Principal;
+import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItemInArray;
@@ -42,6 +48,9 @@ import static org.junit.Assert.assertNull;
 @RunWith(FeaturesRunner.class)
 @Features(LTIFeature.class)
 public final class OAuthLTIFilterTest {
+
+    @Inject
+    DirectoryService directoryService;
 
     public static final String EXPECTED_USERNAME = "wharblegarbleg12345";
     private static final class MockFilterChain implements FilterChain {
@@ -133,6 +142,16 @@ public final class OAuthLTIFilterTest {
         String ltiRoles = (String) userDoc.getPropertyValue("user:ltiRoles");
         assertNotNull(ltiRoles);
         assertThat(ltiRoles.split(","), hasItemInArray("Instructor"));
+        LoginContext context = Framework.login(EXPECTED_USERNAME, EXPECTED_USERNAME);
+        try (Session session = directoryService.open(LTIConsumerRegistry.DIRECTORY)) {
+            DocumentModelList results = session.query(
+                    Collections.singletonMap(LTIConsumerRegistry.CONSUMER_KEY_PROP,
+                                             "12345"));
+            assertEquals("non-administrative user should not see LTIConsumerRegistry contents",
+                         0, results.size());
+        } finally {
+            context.logout();
+        }
     }
 
     @Test

@@ -11,6 +11,20 @@
       <idField>consumerKey</idField>
       <autoincrementIdField>false</autoincrementIdField>
       <createTablePolicy>on_missing_columns</createTablePolicy>
+      <permissions>
+        <permission name="Read">
+          <group>Administrators</group>
+        </permission>
+        <permission name="Write">
+          <group>Administrators</group>
+        </permission>
+        <permission name="Read">
+          <user>Administrator</user>
+        </permission>
+        <permission name="Write">
+          <user>Administrator</user>
+        </permission>
+      </permissions>
     </directory>
   </extension>
 </component>
