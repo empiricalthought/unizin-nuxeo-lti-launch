@@ -18,10 +18,6 @@
   <xs:element name="toolConsumerInstanceGuid" type="xs:string"/>
   <xs:element name="ltiUserId" type="xs:string"/>
 
-  <!-- commented-out section below fails to create DB tables -->
-  <!-- <xs:element name="ltiRoles" type="nxs:stringList"/> -->
-  <xs:element name="ltiRoles" type="xs:string"/>
-
   <xs:element name="groups" type="nxs:stringList" />
 
 </xs:schema>

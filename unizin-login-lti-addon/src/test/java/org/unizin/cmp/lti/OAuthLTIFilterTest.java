@@ -1,12 +1,21 @@
 package org.unizin.cmp.lti;
 
-import com.google.common.net.MediaType;
-import net.oauth.OAuth;
-import net.oauth.OAuthAccessor;
-import net.oauth.OAuthConsumer;
-import net.oauth.OAuthMessage;
-import net.oauth.server.OAuthServlet;
-import net.oauth.signature.RSA_SHA1;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Principal;
+
+import javax.inject.Inject;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.MockHttpSession;
@@ -16,8 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.directory.api.DirectoryService;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
@@ -26,24 +33,14 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
-import javax.inject.Inject;
-import javax.security.auth.login.LoginContext;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.Principal;
-import java.util.Collections;
+import com.google.common.net.MediaType;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import net.oauth.OAuth;
+import net.oauth.OAuthAccessor;
+import net.oauth.OAuthConsumer;
+import net.oauth.OAuthMessage;
+import net.oauth.server.OAuthServlet;
+import net.oauth.signature.RSA_SHA1;
 
 @RunWith(FeaturesRunner.class)
 @Features(LTIFeature.class)
@@ -107,6 +104,7 @@ public final class OAuthLTIFilterTest {
         final String consumerKey = "12345";
         final String consumerSecret = "secret";
         final String requestURI = "http://whatever.com";
+        final String toolConsumerGuid = "wharblegarbleguid";
         final OAuthConsumer consumer = new OAuthConsumer("", consumerKey, consumerSecret, null);
         if (keyPair != null) {
             consumer.setProperty(RSA_SHA1.PRIVATE_KEY, keyPair.getPrivate().getEncoded());
@@ -121,7 +119,7 @@ public final class OAuthLTIFilterTest {
         req.addParameter("oauth_signature_method", signatureMethod);
         req.addParameter("oauth_timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         req.addParameter("lti_message_type", "basic-lti-launch-request");
-        req.addParameter("tool_consumer_instance_guid", "wharblegarbleguid");
+        req.addParameter("tool_consumer_instance_guid", toolConsumerGuid);
         req.addParameter("user_id", "12345");
         req.addParameter("lis_person_name_given", "Ani");
         req.addParameter("lis_person_name_family", "DiFranco");
@@ -136,22 +134,10 @@ public final class OAuthLTIFilterTest {
         assertEquals("Expected one call to filter chain.", 1, chain.numCalls);
         assertEquals("Expected one authorized call to filter chain.", 1, chain.authCalls);
         assertEquals(EXPECTED_USERNAME, chain.principal.getName());
-        UserManager um = Framework.getService(UserManager.class);
-        DocumentModel userDoc = um.getUserModel(EXPECTED_USERNAME);
+        final UserManager um = Framework.getService(UserManager.class);
+        final DocumentModel userDoc = um.getUserModel(EXPECTED_USERNAME);
         assertNotNull(userDoc);
-        String ltiRoles = (String) userDoc.getPropertyValue("user:ltiRoles");
-        assertNotNull(ltiRoles);
-        assertThat(ltiRoles.split(","), hasItemInArray("Instructor"));
-        LoginContext context = Framework.login(EXPECTED_USERNAME, EXPECTED_USERNAME);
-        try (Session session = directoryService.open(LTIConsumerRegistry.DIRECTORY)) {
-            DocumentModelList results = session.query(
-                    Collections.singletonMap(LTIConsumerRegistry.CONSUMER_KEY_PROP,
-                                             "12345"));
-            assertEquals("non-administrative user should not see LTIConsumerRegistry contents",
-                         0, results.size());
-        } finally {
-            context.logout();
-        }
+        assertEquals(toolConsumerGuid, userDoc.getPropertyValue("user:toolConsumerInstanceGuid"));
     }
 
     @Test
