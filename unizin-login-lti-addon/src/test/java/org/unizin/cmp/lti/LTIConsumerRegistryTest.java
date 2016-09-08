@@ -6,12 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import javax.inject.Inject;
 import javax.security.auth.login.LoginContext;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -47,6 +47,11 @@ public final class LTIConsumerRegistryTest {
     @Inject
     LTIConsumerRegistry ltiRegistry;
 
+    @Before
+    public void loginAsAdministrator() throws Exception {
+        Framework.login();
+    }
+
     @Test
     public void testDirectoryExists() {
         try (final Session session = directoryService.open(LTIConsumerRegistry.DIRECTORY)) {
@@ -59,7 +64,7 @@ public final class LTIConsumerRegistryTest {
     }
 
     @Test
-    public void testSaveAndRetrieve() throws IOException {
+    public void testSaveAndRetrieve() throws Exception {
         final String consumerSecret = "secret";
         final byte[] cert = "x509".getBytes();
         // Initial save.
