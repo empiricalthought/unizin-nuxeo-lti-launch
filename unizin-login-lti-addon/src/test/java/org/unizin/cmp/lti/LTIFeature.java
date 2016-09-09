@@ -7,7 +7,7 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 import org.nuxeo.runtime.test.runner.SimpleFeature;
 
 
-@Features(PlatformFeature.class)
+@Features({PlatformFeature.class})
 @Deploy({
     "org.nuxeo.ecm.platform.oauth",
     "org.nuxeo.usermapper",

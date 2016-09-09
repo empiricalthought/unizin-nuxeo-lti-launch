@@ -15,6 +15,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoAuthenticationFilter;
 import org.nuxeo.ecm.platform.ui.web.auth.NuxeoSecuredRequestWrapper;
@@ -44,6 +45,12 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthLTIFilter.class);
     private static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
+
+    /**
+     * Name of the session attribute containing the LTI launch parameters.
+     * These are stored as a map of parameter key-value pairs.
+     */
+    public static final String LAUNCH_PARAMS_ATTRIB = "ltiLaunchParams";
 
 
     @Override
@@ -101,15 +108,18 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
     }
 
 
-    private static Principal principal(final HttpServletRequest request) {
-        final Map<String, Object> userObject = Maps.newHashMap();
-        for (final String param : Collections.list(request.getParameterNames())) {
-            userObject.put(param, request.getParameter(param));
-        }
+    private static Principal principal(final Map<String, String> userObject) {
         final UserMapperService ums = Framework.getService(UserMapperService.class);
         return ums.getOrCreateAndUpdateNuxeoPrincipal("LTI", userObject);
     }
 
+    private static Map<String, String> parameters(final HttpServletRequest request) {
+        final Map<String, String> m = Maps.newTreeMap(); // Ordered => easier debugging.
+        for (final String param : Collections.list(request.getParameterNames())) {
+            m.put(param, request.getParameter(param));
+        }
+        return m;
+    }
 
     private Principal doFilter(final OAuthMessage message,
             final HttpServletRequest request,
@@ -124,12 +134,15 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
             throw new OAuthProblemException(Problems.CONSUMER_KEY_UNKNOWN);
         }
         validate(VALIDATOR, message, consumer, LOGGER);
-        final Principal principal = principal(request);
+        final Map<String, String> parameters = parameters(request);
+        final Principal principal = principal(parameters);
         if (principal == null) {
             throw new OAuthProblemException(Problems.USER_REFUSED);
         }
         try {
             NuxeoAuthenticationFilter.loginAs(principal.getName());
+            final HttpSession session = request.getSession();
+            session.setAttribute(LAUNCH_PARAMS_ATTRIB, parameters);
             return principal;
         } catch (final LoginException e) {
             // Login failed. Follow NuxeoOAuthFilter's lead and send this back.

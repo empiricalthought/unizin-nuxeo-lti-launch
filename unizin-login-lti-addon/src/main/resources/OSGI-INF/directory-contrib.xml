@@ -13,16 +13,10 @@
       <createTablePolicy>on_missing_columns</createTablePolicy>
       <permissions>
         <permission name="Read">
-          <group>Administrators</group>
+          <group>administrators</group>
         </permission>
         <permission name="Write">
-          <group>Administrators</group>
-        </permission>
-        <permission name="Read">
-          <user>Administrator</user>
-        </permission>
-        <permission name="Write">
-          <user>Administrator</user>
+          <group>administrators</group>
         </permission>
       </permissions>
     </directory>
