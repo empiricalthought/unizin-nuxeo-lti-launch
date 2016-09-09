@@ -3,8 +3,11 @@ package org.unizin.cmp.lti;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Principal;
@@ -20,6 +23,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.output.NullOutputStream;
 import org.jboss.seam.mock.EnhancedMockHttpServletRequest;
 import org.jboss.seam.mock.EnhancedMockHttpServletResponse;
 import org.jboss.seam.mock.MockHttpSession;
@@ -164,8 +168,10 @@ public final class OAuthLTIFilterTest {
             assertEquals("Expected one authorized call to filter chain.", 1,
                     chain.authCalls);
             assertEquals(EXPECTED_USERNAME, chain.principal.getName());
-            assertEquals(requestParams,
-                    session.getAttribute(OAuthLTIFilter.LAUNCH_PARAMS_ATTRIB));
+            final Object sessionParams = session.getAttribute(
+                    OAuthLTIFilter.LAUNCH_PARAMS_ATTRIB);
+            assertEquals(requestParams, sessionParams);
+            assertSerializable(sessionParams);
 
             final UserManager um = Framework.getService(UserManager.class);
             final DocumentModel userDoc = um.getUserModel(EXPECTED_USERNAME);
@@ -174,6 +180,15 @@ public final class OAuthLTIFilterTest {
                     userDoc.getPropertyValue("user:toolConsumerInstanceGuid"));
         } finally {
             Framework.login();
+        }
+    }
+
+
+    private void assertSerializable(final Object o) throws IOException {
+        try (final ObjectOutputStream oos = new ObjectOutputStream(new NullOutputStream())) {
+            oos.writeObject(o);
+        } catch (final NotSerializableException e) {
+            fail("Object not serializable: " + o);
         }
     }
 
