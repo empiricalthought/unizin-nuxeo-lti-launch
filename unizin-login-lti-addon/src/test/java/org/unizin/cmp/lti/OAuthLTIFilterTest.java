@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -32,6 +35,7 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
+import com.google.api.client.util.Maps;
 import com.google.common.net.MediaType;
 
 import net.oauth.OAuth;
@@ -44,11 +48,26 @@ import net.oauth.signature.RSA_SHA1;
 @RunWith(FeaturesRunner.class)
 @Features(LTIFeature.class)
 public final class OAuthLTIFilterTest {
+    private static final String CONSUMER_KEY = "12345";
+    private static final String TOOL_CONSUMER_GUID = "wharblegarbleguid";
+    private static final Map<String, String> PARAMETERS;
+    static {
+        final Map<String, String> m = Maps.newHashMap();
+        m.put("oauth_version", "1.0");
+        m.put("oauth_consumer_key", CONSUMER_KEY);
+        m.put("oauth_nonce", "whatever");
+        m.put("lti_message_type", "basic-lti-launch-request");
+        m.put("tool_consumer_instance_guid", TOOL_CONSUMER_GUID);
+        m.put("user_id", "userID");
+        m.put("lis_person_name_given", "Ani");
+        m.put("lis_person_name_family", "DiFranco");
+        m.put("lis_person_contact_email_primary", "info@righteousbabe.com");
+        m.put("roles", "Instructor,Learner");
+        PARAMETERS = Collections.unmodifiableMap(m);
+    }
 
-    @Inject
-    DirectoryService directoryService;
+    public static final String EXPECTED_USERNAME = "wharblegarbleguserID";
 
-    public static final String EXPECTED_USERNAME = "wharblegarbleg12345";
     private static final class MockFilterChain implements FilterChain {
         int numCalls = 0;
         int authCalls = 0;
@@ -67,6 +86,10 @@ public final class OAuthLTIFilterTest {
             }
         }
     }
+
+
+    @Inject
+    DirectoryService directoryService;
 
     private OAuthLTIFilter filter;
     private MockHttpSession session;
@@ -104,52 +127,69 @@ public final class OAuthLTIFilterTest {
     private void testAuth(final String signatureMethod, final KeyPair keyPair)
             throws Exception {
         try {
-            final String consumerKey = "12345";
             final String consumerSecret = "secret";
             final String requestURI = "http://whatever.com";
-            final String toolConsumerGuid = "wharblegarbleguid";
-            final OAuthConsumer consumer = new OAuthConsumer("", consumerKey, consumerSecret, null);
+            final OAuthConsumer consumer = new OAuthConsumer("", CONSUMER_KEY,
+                    consumerSecret, null);
             if (keyPair != null) {
-                consumer.setProperty(RSA_SHA1.PRIVATE_KEY, keyPair.getPrivate().getEncoded());
-                consumer.setProperty(RSA_SHA1.PUBLIC_KEY, keyPair.getPublic().getEncoded());
+                consumer.setProperty(RSA_SHA1.PRIVATE_KEY,
+                        keyPair.getPrivate().getEncoded());
+                consumer.setProperty(RSA_SHA1.PUBLIC_KEY,
+                        keyPair.getPublic().getEncoded());
             }
             Framework.getService(LTIConsumerRegistry.class).save(consumer);
             req.setContentType(MediaType.FORM_DATA.toString());
             req.addHeader("X-Forwarded-Proto", "https");
-            req.addParameter("oauth_version", "1.0");
-            req.addParameter("oauth_consumer_key", consumerKey);
-            req.addParameter("oauth_nonce", "whatever");
-            req.addParameter("oauth_signature_method", signatureMethod);
-            req.addParameter("oauth_timestamp", String.valueOf(System.currentTimeMillis() / 1000));
-            req.addParameter("lti_message_type", "basic-lti-launch-request");
-            req.addParameter("tool_consumer_instance_guid", toolConsumerGuid);
-            req.addParameter("user_id", "12345");
-            req.addParameter("lis_person_name_given", "Ani");
-            req.addParameter("lis_person_name_family", "DiFranco");
-            req.addParameter("lis_person_contact_email_primary", "info@righteousbabe.com");
-            req.addParameter("roles", "Instructor,Learner");
             req.setRequestURI(requestURI);
-            final OAuthMessage message = OAuthServlet.getMessage(req, requestURI.replaceFirst("http:", "https:"));
+            final Map<String, String> requestParams = new TreeMap<>(PARAMETERS);
+            requestParams.put("oauth_timestamp",
+                    String.valueOf(System.currentTimeMillis() / 1000));
+            requestParams.put("oauth_signature_method", signatureMethod);
+            for (final Map.Entry<String, String> entry: requestParams.entrySet()) {
+                req.addParameter(entry.getKey(), entry.getValue());
+            }
+            final OAuthMessage message = OAuthServlet.getMessage(req,
+                    requestURI.replaceFirst("http:", "https:"));
             message.sign(new OAuthAccessor(consumer));
             req.addParameter("oauth_signature", message.getSignature());
             filter.doFilter(req, resp, chain);
-            assertEquals(resp.getStatusMessage(), HttpServletResponse.SC_OK, resp.getStatus());
-            assertEquals("Expected one call to filter chain.", 1, chain.numCalls);
-            assertEquals("Expected one authorized call to filter chain.", 1, chain.authCalls);
+            assertEquals(resp.getStatusMessage(), HttpServletResponse.SC_OK,
+                    resp.getStatus());
+            assertEquals("Expected one call to filter chain.", 1,
+                    chain.numCalls);
+            assertEquals("Expected one authorized call to filter chain.", 1,
+                    chain.authCalls);
             assertEquals(EXPECTED_USERNAME, chain.principal.getName());
+
+            final Map<String, String> sessionParams = Maps.newTreeMap();
+            req.getParameters().forEach(
+                    (k,v) -> {
+                        // added to the session by the filter.
+                        if ("oauth_signature".equals(k)) {
+                            return;
+                        }
+                        final String val = (v == null || v.length == 0) ?
+                                null : v[0];
+                        sessionParams.put(k, val);
+                    });
+            assertEquals(requestParams, sessionParams);
+
             final UserManager um = Framework.getService(UserManager.class);
             final DocumentModel userDoc = um.getUserModel(EXPECTED_USERNAME);
             assertNotNull(userDoc);
-            assertEquals(toolConsumerGuid, userDoc.getPropertyValue("user:toolConsumerInstanceGuid"));
+            assertEquals(TOOL_CONSUMER_GUID,
+                    userDoc.getPropertyValue("user:toolConsumerInstanceGuid"));
         } finally {
             Framework.login();
         }
     }
 
+
     @Test
     public void testHMAC() throws Exception {
         testAuth(OAuth.HMAC_SHA1, null);
     }
+
 
     @Test
     public void testRSA() throws Exception {
