@@ -148,10 +148,14 @@ public final class OAuthLTIFilterTest {
             for (final Map.Entry<String, String> entry: requestParams.entrySet()) {
                 req.addParameter(entry.getKey(), entry.getValue());
             }
+
             final OAuthMessage message = OAuthServlet.getMessage(req,
                     requestURI.replaceFirst("http:", "https:"));
             message.sign(new OAuthAccessor(consumer));
+            // Need to add signature AFTER signing.
             req.addParameter("oauth_signature", message.getSignature());
+            requestParams.put("oauth_signature", message.getSignature());
+
             filter.doFilter(req, resp, chain);
             assertEquals(resp.getStatusMessage(), HttpServletResponse.SC_OK,
                     resp.getStatus());
@@ -160,19 +164,8 @@ public final class OAuthLTIFilterTest {
             assertEquals("Expected one authorized call to filter chain.", 1,
                     chain.authCalls);
             assertEquals(EXPECTED_USERNAME, chain.principal.getName());
-
-            final Map<String, String> sessionParams = Maps.newTreeMap();
-            req.getParameters().forEach(
-                    (k,v) -> {
-                        // added to the session by the filter.
-                        if ("oauth_signature".equals(k)) {
-                            return;
-                        }
-                        final String val = (v == null || v.length == 0) ?
-                                null : v[0];
-                        sessionParams.put(k, val);
-                    });
-            assertEquals(requestParams, sessionParams);
+            assertEquals(requestParams,
+                    session.getAttribute(OAuthLTIFilter.LAUNCH_PARAMS_ATTRIB));
 
             final UserManager um = Framework.getService(UserManager.class);
             final DocumentModel userDoc = um.getUserModel(EXPECTED_USERNAME);
