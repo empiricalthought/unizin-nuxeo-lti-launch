@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,7 +13,9 @@
   <groupId>org.unizin.cmp</groupId>
   <version>1.0.17-SNAPSHOT</version>
   <name>Unizin login lti</name>
-  <description>Nuxeo extension to get or create Nuxeo users based on valid LTI launch parameters</description>
+  <description>Nuxeo extension to get or create Nuxeo users based on valid LTI
+    launch parameters
+  </description>
   <packaging>pom</packaging>
 
   <modules>
@@ -35,7 +39,7 @@
     </dependencies>
   </dependencyManagement>
 
- <repositories>
+  <repositories>
     <repository>
       <id>public</id>
       <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
@@ -57,7 +61,32 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>unizin-prod-maven</id>
+      <url>s3://unizin-prod-maven/release</url>
+    </repository>
   </repositories>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
+  </build>
+  
+  <distributionManagement>
+    <snapshotRepository>
+      <id>unizin-prod-maven</id>
+      <url>s3://unizin-prod-maven/snapshot</url>
+    </snapshotRepository>
+    <repository>
+      <id>unizin-prod-maven</id>
+      <url>s3://unizin-prod-maven/release</url>
+    </repository>
+  </distributionManagement>
 
   <pluginRepositories>
     <pluginRepository>
