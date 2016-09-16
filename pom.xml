@@ -18,6 +18,10 @@
   </description>
   <packaging>pom</packaging>
 
+  <scm>
+    <developerConnection>scm:git:https://github.com/unizin/unizin-nuxeo-lti-launch</developerConnection>
+  </scm>
+
   <modules>
     <module>unizin-login-lti-addon</module>
     <module>unizin-login-lti-mp</module>
@@ -68,6 +72,13 @@
   </repositories>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+      </plugin>
+    </plugins>
     <extensions>
       <extension>
         <groupId>org.kuali.maven.wagons</groupId>
