@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,7 +9,7 @@
 
   <artifactId>unizin-login-lti</artifactId>
   <groupId>org.unizin.cmp</groupId>
-  <version>1.0.17-SNAPSHOT</version>
+  <version>1.0.17</version>
   <name>Unizin login lti</name>
   <description>Nuxeo extension to get or create Nuxeo users based on valid LTI
     launch parameters
@@ -20,6 +18,7 @@
 
   <scm>
     <developerConnection>scm:git:https://github.com/unizin/unizin-nuxeo-lti-launch</developerConnection>
+    <tag>unizin-login-lti-1.0.17</tag>
   </scm>
 
   <modules>
