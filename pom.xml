@@ -9,7 +9,7 @@
 
   <artifactId>unizin-login-lti</artifactId>
   <groupId>org.unizin.cmp</groupId>
-  <version>1.0.17</version>
+  <version>1.0.18-SNAPSHOT</version>
   <name>Unizin login lti</name>
   <description>Nuxeo extension to get or create Nuxeo users based on valid LTI
     launch parameters
@@ -18,7 +18,7 @@
 
   <scm>
     <developerConnection>scm:git:https://github.com/unizin/unizin-nuxeo-lti-launch</developerConnection>
-    <tag>unizin-login-lti-1.0.17</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <modules>
