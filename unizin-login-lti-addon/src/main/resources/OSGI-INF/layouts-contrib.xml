@@ -1,0 +1,30 @@
+<component name="org.unizin.cmp.lti.userLayout">
+  <require>org.nuxeo.ecm.platform.forms.layout.WebLayoutManager</require>
+
+  <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+    point="widgets">
+    <widget name="userAdditionalWidgets" type="complex">
+      <labels>
+        <label mode="any">user.ltiAttributes</label>
+      </labels>
+      <subWidgets>
+        <widget name="toolConsumerInstanceGuid" type="text">
+          <labels>
+            <label mode="any">user.toolConsumerInstanceGuid</label>
+          </labels>
+          <fields>
+            <field schema="user">toolConsumerInstanceGuid</field>
+          </fields>
+        </widget>
+        <widget name="ltiUserId" type="text">
+          <labels>
+            <label mode="any">user.ltiUserId</label>
+          </labels>
+          <fields>
+            <field schema="user">ltiUserId</field>
+          </fields>
+        </widget>
+      </subWidgets>
+    </widget>
+  </extension>
+</component>

@@ -10,6 +10,7 @@ Nuxeo-Component: OSGI-INF/lti-login-contrib.xml,
  OSGI-INF/authentication-contrib.xml,
  OSGI-INF/lticonsumer-framework.xml,
  OSGI-INF/schema-contrib.xml,
+ OSGI-INF/layouts-contrib.xml,
  OSGI-INF/directory-contrib.xml,
  OSGI-INF/directory-ui-contrib.xml
 
