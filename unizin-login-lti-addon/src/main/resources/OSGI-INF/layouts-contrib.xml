@@ -1,4 +1,4 @@
-<component name="org.unizin.cmp.lti.userLayoutContrib">
+<component name="org.unizin.cmp.lti.userLayout">
   <require>org.nuxeo.ecm.platform.forms.layout.WebLayoutManager</require>
 
   <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
