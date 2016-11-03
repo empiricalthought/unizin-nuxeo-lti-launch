@@ -5,12 +5,12 @@
     point="widgets">
     <widget name="userAdditionalWidgets" type="complex">
       <labels>
-        <label mode="any">LTI User Attributes</label>
+        <label mode="any">user.ltiAttributes</label>
       </labels>
       <subWidgets>
         <widget name="toolConsumerInstanceGuid" type="text">
           <labels>
-            <label mode="any">Tool Consumer Instance GUID</label>
+            <label mode="any">user.toolConsumerInstanceGuid</label>
           </labels>
           <fields>
             <field schema="user">toolConsumerInstanceGuid</field>
@@ -18,7 +18,7 @@
         </widget>
         <widget name="ltiUserId" type="text">
           <labels>
-            <label mode="any">LTI User ID</label>
+            <label mode="any">user.ltiUserId</label>
           </labels>
           <fields>
             <field schema="user">ltiUserId</field>
