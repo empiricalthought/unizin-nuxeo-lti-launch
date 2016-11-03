@@ -12,7 +12,6 @@
 
   <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
     point="layouts">
-
     <layout name="ltiConsumerLayout">
       <templates>
         <template mode="any">
@@ -71,5 +70,6 @@
         </fields>
       </widget>
     </layout>
+
   </extension>
 </component>
