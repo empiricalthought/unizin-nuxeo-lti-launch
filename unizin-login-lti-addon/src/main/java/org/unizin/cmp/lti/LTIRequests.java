@@ -43,7 +43,7 @@ final class LTIRequests {
 
     // Adapted from NuxeoOAuthFilter.
     static String requestURL(final HttpServletRequest request) {
-        final String url = request.getRequestURI();
+        final String url = request.getRequestURL().toString();
         final String proto = request.getHeader("X-Forwarded-Proto");
         if (proto == null || url.startsWith(proto)) {
             return url;
