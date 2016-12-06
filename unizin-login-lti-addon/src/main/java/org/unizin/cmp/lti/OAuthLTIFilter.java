@@ -110,7 +110,7 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
 
     private static Principal principal(final Map<String, String> userObject) {
         final UserMapperService ums = Framework.getService(UserMapperService.class);
-        return ums.getOrCreateAndUpdateNuxeoPrincipal("LTI", userObject);
+        return ums.getOrCreateAndUpdateNuxeoPrincipal("LTI", true, false, userObject);
     }
 
     private static Map<String, String> parameters(final HttpServletRequest request) {
