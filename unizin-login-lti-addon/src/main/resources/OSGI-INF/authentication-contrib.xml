@@ -8,9 +8,9 @@
       point="preFilter">
     <preFilter name="OAuthLTI" class="org.unizin.cmp.lti.OAuthLTIFilter"/>
     <!-- FIXME: DummyAuthPreFilter is workaround for https://jira.nuxeo.com/browse/NXP-19826 -->
-    <preFilter name="OAuth" class="org.nuxeo.ecm.platform.ui.web.auth.DummyAuthPreFilter"
+    <preFilter name="OAuth" class="org.unizin.cmp.lti.DummyAuthPreFilter"
                enabled="false"/>
-    <preFilter name="OAuth2" class="org.nuxeo.ecm.platform.ui.web.auth.DummyAuthPreFilter"
+    <preFilter name="OAuth2" class="org.unizin.cmp.lti.DummyAuthPreFilter"
                enabled="false"/>
   </extension>
 </component>
