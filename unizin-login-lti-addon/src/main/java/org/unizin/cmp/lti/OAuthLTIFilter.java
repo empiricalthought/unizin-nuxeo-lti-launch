@@ -8,6 +8,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -94,9 +95,10 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
             startedTx = TransactionHelper.startTransaction();
         }
         boolean done = false;
-        done = true;
         try {
-            return doFilter(message, request, response);
+            final Principal p = doFilter(message, request, response);
+            done = true;
+            return p;
         } finally {
             if (startedTx) {
                 if (done == false) {
@@ -121,6 +123,24 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
         return m;
     }
 
+    private static LoginContext login(final Principal principal)
+            throws OAuthProblemException {
+        try {
+            return NuxeoAuthenticationFilter.loginAs(principal.getName());
+        } catch (final LoginException e) {
+             // Login failed. Follow NuxeoOAuthFilter's lead and send this back.
+            throw new OAuthProblemException(Problems.SIGNATURE_INVALID);
+        }
+    }
+
+    private static void logout(final LoginContext lc) {
+        try {
+            lc.logout();
+        } catch (final LoginException e) {
+            LOGGER.warn("Error logging out.", e);
+        }
+    }
+
     private Principal doFilter(final OAuthMessage message,
             final HttpServletRequest request,
             final HttpServletResponse response)
@@ -139,14 +159,13 @@ public class OAuthLTIFilter implements NuxeoAuthPreFilter {
         if (principal == null) {
             throw new OAuthProblemException(Problems.USER_REFUSED);
         }
+        final LoginContext lc = login(principal);
         try {
-            NuxeoAuthenticationFilter.loginAs(principal.getName());
             final HttpSession session = request.getSession();
             session.setAttribute(LAUNCH_PARAMS_ATTRIB, parameters);
             return principal;
-        } catch (final LoginException e) {
-            // Login failed. Follow NuxeoOAuthFilter's lead and send this back.
-            throw new OAuthProblemException(Problems.SIGNATURE_INVALID);
+        } finally {
+            logout(lc);
         }
     }
 }
