@@ -7,8 +7,8 @@
       target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
       point="preFilter">
       <preFilter name="OAuthLTI" class="org.unizin.cmp.lti.OAuthLTIFilter"/>
-      <preFilter name="OAuth" class="org.nuxeo.ecm.platform.ui.web.auth.oauth.NuxeoOAuthFilter"/>
-      <preFilter name="OAuth2" class="org.nuxeo.ecm.platform.ui.web.auth.oauth2.NuxeoOAuth2Filter"/>
+      <!-- <preFilter name="OAuth" class="org.nuxeo.ecm.platform.ui.web.auth.oauth.NuxeoOAuthFilter"/> -->
+      <!-- <preFilter name="OAuth2" class="org.nuxeo.ecm.platform.ui.web.auth.oauth2.NuxeoOAuth2Filter"/> -->
   </extension>
 
 </component>
