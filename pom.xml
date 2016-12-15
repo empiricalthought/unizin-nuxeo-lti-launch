@@ -4,17 +4,21 @@
   <parent>
     <groupId>org.nuxeo.ecm.distribution</groupId>
     <artifactId>nuxeo-distribution</artifactId>
-    <version>8.3</version>
+    <version>8.10</version>
   </parent>
 
   <artifactId>unizin-login-lti</artifactId>
   <groupId>org.unizin.cmp</groupId>
-  <version>1.0.25-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>Unizin login lti</name>
   <description>Nuxeo extension to get or create Nuxeo users based on valid LTI
     launch parameters
   </description>
   <packaging>pom</packaging>
+
+  <properties>
+    <nuxeo.distribution.version>8.10</nuxeo.distribution.version>
+  </properties>
 
   <scm>
     <developerConnection>scm:git:https://github.com/unizin/unizin-nuxeo-lti-launch</developerConnection>
