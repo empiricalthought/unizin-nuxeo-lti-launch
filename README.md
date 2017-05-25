@@ -1,6 +1,6 @@
 # unizin-nuxeo-lti-launch
 
-###Nuxeo Authenticator Plugin and User Mapper
+### Nuxeo Authenticator Plugin and User Mapper
 
 When the request is coming to the server (by order), it goes:
 
@@ -8,16 +8,15 @@ When the request is coming to the server (by order), it goes:
 
 - The `authenticationChain` contributions (in `lti-login-contrib.xml`):
 
-The pre-filters defined for the OAuth authenticator have been disabled and a custom one has been defined [OAuthLTIFilter](https://github.com/unizin/unizin-nuxeo-lti-launch/blob/master/unizin-login-lti-addon/src/main/java/org/unizin/cmp/auth/OAuthLTIFilter.java). It must be completed to provide the require behavior.
+The pre-filters defined for the OAuth authenticator have been disabled and a custom one has been defined [OAuthLTIFilter](https://github.com/unizin/unizin-nuxeo-lti-launch/blob/master/unizin-login-lti-addon/src/main/java/org/unizin/cmp/lti/OAuthLTIFilter.java). It must be completed to provide the require behavior.
 
 The `NuxeoAuthenticationFilter` will use this chain to trigger the login prompt. When authentication is needed, the Filter will first call the `handleRetrieveIdentity` method on all the plugins in the order of the authentication chain. Then, if the authentication could not be achieved, the filter will call the `handleLoginPrompt` method in the same order on all the plugins. The aim is to have as much automatic authentications as possible. That's why all the manual authentications (those needing a prompt) are done in a second round.
 
-- `org.unizin.cmp.login.LtiAuthenticator`: Main auth configuration. This is where all the business auth logic should be implemented but if you need another guard, there is
+See [Authentication and User Management > Core Implementation](https://doc.nuxeo.com/display/NXDOC/Authentication+and+User+Management).
 
--> A login Plugin:
 
-- `org.unizin.cmp.login.LtiLoginPlugin` can be used instead of `Trusting_LM` module to validate a user afterward.
+### Open Source
 
-- `org.unizin.cmp.login.LtiUserMapper`: It's used in case you would like to have a hook on the other authentication configuration (Basic, OAuth etc...). If you don't have to hook on another auth plugin than your own, the implementation of the user mapper can be done inside the LtiAuthenticator.
-
-Don't hesitate again to read [Authentication and User Management > Core Implementation](https://doc.nuxeo.com/display/NXDOC/Authentication+and+User+Management), with the schemas giving you the big picture (in complement with the above explanations).
+This software is written for and maintained by Unizin. We offer it without
+guarantees because it may be useful to your projects. All proposed contributions
+to this repository are reviewed by Unizin.
